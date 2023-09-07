@@ -1,0 +1,64 @@
+<template>
+  <div class="q-pa-md">
+    <div class="q-gutter-md" style="max-width: 400px">
+      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+        <q-input v-model="fname" label="First Name" />
+        <q-input v-model="lname" label="Last Name" />
+        <q-input v-model="username" label="Username" />
+        <q-input v-model="password" label="Password" type="password" />
+        <q-input v-model="email" label="Email" />
+        <q-input v-model="avatar" label="Avatar" />
+        <q-btn label="Submit" type="submit" color="primary" />
+      </q-form>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import router from "../router";
+
+const fname = ref("Cat");
+const lname = ref("Chat");
+const username = ref("cat.chat@melivecode.com");
+const password = ref("1234");
+const email = ref("cat.chat@melivecode.com");
+const avatar = ref("https://www.melivecode.com/users/cat.png");
+
+const onSubmit = () => {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    fname: fname.value,
+    lname: lname.value,
+    username: username.value,
+    password: password.value,
+    email: email.value,
+    avatar: avatar.value,
+  });
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  fetch("https://www.melivecode.com/api/users/create", requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      alert(result.message);
+      if (result.status == "ok") {
+        router.push("/");
+      }
+    })
+    .catch((error) => console.log("error", error));
+};
+
+const onReset = () => {
+  alert("Reset");
+};
+</script>
+
+<style scoped></style>
